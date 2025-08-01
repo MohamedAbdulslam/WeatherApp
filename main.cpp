@@ -1,13 +1,22 @@
 #include <iostream>
+#include <cstdlib>  // for getenv
 #include "WeatherClient.hpp"
 
-int main() {
-    std::string apiKey = "YOUR_API_KEY"; // Replace with your API key
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <city>\n";
+        return 1;
+    }
+    std::string apiKey;
+    const char* apiKeyEnv = std::getenv("API_KEY");
+    if (!apiKeyEnv) {
+        std::cerr << "Error: API_KEY environment variable not set.\n";
+        return 1;
+    }
+    apiKey = apiKeyEnv;
     WeatherClient client(apiKey);
 
-    std::cout << "Enter city: ";
-    std::string city;
-    std::getline(std::cin, city);
+    std::string city = argv[1];
 
     std::string weatherJson = client.getWeatherData(city);
 
@@ -19,3 +28,4 @@ int main() {
 
     return 0;
 }
+
